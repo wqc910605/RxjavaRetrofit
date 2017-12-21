@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.wwf.test.retrofit_rxjava.BaseBean;
+import com.wwf.test.retrofit_rxjava.LoginBean;
 import com.wwf.test.retrofit_rxjava.RetrofitUtil;
 
 import java.util.HashMap;
@@ -23,17 +24,17 @@ public class MainActivity extends AppCompatActivity {
     public void click(View view) {
 //        setNotification();
 //        toastDemo();
-//        test1();
+        test1();
 //        test2();
 //        test3();
 //        test4();
-        test5();
+//        test5();
     }
 
     private void test5() {
-//        LoginBean loginBean = new LoginBean();
-//        loginBean.sid = "1";
-//        loginBean.userId = "123456";
+        LoginBean loginBean = new LoginBean();
+        loginBean.sid = "1";
+        loginBean.userId = "123456";
 
         Map<String, String> params = new HashMap<>();
         params.put("sid", "1");
@@ -110,9 +111,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void test1() {
-        RetrofitUtil.getInstance().getApiService().get("https://snail-stg1.zysnail.com/snail/queryIdentities.do?sid=1&userId=123456")
+        /*RetrofitUtil.getInstance().getApiService().get("https://snail-stg1.zysnail.com/snail/queryIdentities.do?sid=1&userId=123456")
                 .subscribeOn(Schedulers.io())               //在IO线程进行网络请求
                 .observeOn(AndroidSchedulers.mainThread())  //回到主线程去处理请求结果
+                .subscribe(new Consumer<BaseBean<String>>() {
+                    @Override
+                    public void accept(BaseBean<String> baseBean) throws Exception {
+                        System.out.println(baseBean.getCode()+" / "+baseBean.getMessage());
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        ToastUtil.show("网络不好");
+                    }
+                });*/
+        RetrofitUtil retrofitUtil = new RetrofitUtil.Builder().setBaseUrl("https://snail-stg1.zysnail.com/").build();
+//        "https://snail-stg1.zysnail.com/snail/queryIdentities.do?sid=1&userId=123456"
+        Map<String, String> params = new HashMap<>();
+        params.put("sid", "1");
+        params.put("userId", "123456");
+        retrofitUtil.getApiService().post("snail", "queryIdentities.do", params)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<BaseBean<String>>() {
                     @Override
                     public void accept(BaseBean<String> baseBean) throws Exception {
